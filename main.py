@@ -14,6 +14,8 @@ def verify_webhook(
     hub_verify_token: str = "",
     hub_challenge: str = ""
 ):
+    print(hub_verify_token)
+
     if hub_verify_token == VERIFY_TOKEN:
         return int(hub_challenge)
 
