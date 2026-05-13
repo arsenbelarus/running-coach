@@ -8,6 +8,9 @@ VERIFY_TOKEN = "mytoken123"
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
 
+print("TOKEN EXISTS:", WHATSAPP_TOKEN is not None)
+print("TOKEN START:", WHATSAPP_TOKEN[:10] if WHATSAPP_TOKEN else "NONE")
+
 @app.get("/")
 def home():
     return {"message": "Bot alive"}
