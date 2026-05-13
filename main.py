@@ -1,15 +1,14 @@
 from fastapi import FastAPI, Request
+from openai import OpenAI
 import requests
 import os
 
 app = FastAPI()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 VERIFY_TOKEN = "mytoken123"
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
-
-print("TOKEN EXISTS:", WHATSAPP_TOKEN is not None)
-print("TOKEN START:", WHATSAPP_TOKEN[:10] if WHATSAPP_TOKEN else "NONE")
 
 @app.get("/")
 def home():
@@ -36,13 +35,34 @@ async def webhook(request: Request):
 
     try:
         message = body["entry"][0]["changes"][0]["value"]["messages"][0]
+
         phone = message["from"]
         text = message["text"]["body"]
 
-        send_message(phone, f"You said: {text}")
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an elite and experienced running coach. "
+                        "You help runners improve performance, avoid injuries, manage fatigue, "
+                        "prepare for races, and interpret training data."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ]
+        )
+
+        reply = response.choices[0].message.content
+
+        send_message(phone, reply)
 
     except Exception as e:
-        print(e)
+        print("ERROR:", e)
 
     return {"status": "received"}
 
