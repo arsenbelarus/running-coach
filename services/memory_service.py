@@ -21,9 +21,27 @@ CREATE TABLE IF NOT EXISTS users (
     next_race TEXT,
     pb_5k TEXT,
     pb_10k TEXT,
-    pb_half TEXT
+    pb_half TEXT,
+    weekly_km TEXT,
+    fatigue TEXT,
+    race_priority TEXT
 )
 """)
+
+try:
+    cursor.execute("ALTER TABLE users ADD COLUMN weekly_km TEXT")
+except:
+    pass
+
+try:
+    cursor.execute("ALTER TABLE users ADD COLUMN fatigue TEXT")
+except:
+    pass
+
+try:
+    cursor.execute("ALTER TABLE users ADD COLUMN race_priority TEXT")
+except:
+    pass
 
 conn.commit()
 
@@ -57,7 +75,15 @@ def load_messages(phone, limit=10):
 def get_user(phone):
     cursor.execute(
         """
-        SELECT goal, next_race, pb_5k, pb_10k, pb_half
+        SELECT
+            goal,
+            next_race,
+            pb_5k,
+            pb_10k,
+            pb_half,
+            weekly_km,
+            fatigue,
+            race_priority
         FROM users
         WHERE phone = ?
         """,
@@ -74,7 +100,10 @@ def get_user(phone):
         "next_race": row[1],
         "pb_5k": row[2],
         "pb_10k": row[3],
-        "pb_half": row[4]
+        "pb_half": row[4],
+        "weekly_km": row[5],
+        "fatigue": row[6],
+        "race_priority": row[7]
     }
 
 def create_user(phone):
@@ -144,6 +173,42 @@ def update_pb_half(phone, pb):
         WHERE phone = ?
         """,
         (pb, phone)
+    )
+
+    conn.commit()
+
+def update_weekly_km(phone, weekly_km):
+    cursor.execute(
+        """
+        UPDATE users
+        SET weekly_km = ?
+        WHERE phone = ?
+        """,
+        (weekly_km, phone)
+    )
+
+    conn.commit()
+
+def update_fatigue(phone, fatigue):
+    cursor.execute(
+        """
+        UPDATE users
+        SET fatigue = ?
+        WHERE phone = ?
+        """,
+        (fatigue, phone)
+    )
+
+    conn.commit()
+
+def update_race_priority(phone, race_priority):
+    cursor.execute(
+        """
+        UPDATE users
+        SET race_priority = ?
+        WHERE phone = ?
+        """,
+        (race_priority, phone)
     )
 
     conn.commit()

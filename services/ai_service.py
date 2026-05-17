@@ -1,23 +1,14 @@
 import os
 
 from openai import OpenAI
-
 from services.memory_service import (
     load_messages,
     save_message,
     get_user
 )
+from prompts.coach_prompts import SYSTEM_PROMPT
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-
-SYSTEM_PROMPT = """
-You are an elite and experienced running coach.
-You help runners improve performance,
-avoid injuries, manage fatigue,
-prepare for races, and interpret training data.
-"""
-
 
 def generate_reply(phone, text):
     user = get_user(phone)
@@ -26,11 +17,17 @@ def generate_reply(phone, text):
 
     profile_context = f"""
         Runner profile:
+
         Goal: {user['goal']}
         Next race: {user['next_race']}
         5K PB: {user['pb_5k']}
         10K PB: {user['pb_10k']}
         Half marathon PB: {user['pb_half']}
+
+        Current training state:
+        Weekly KM: {user['weekly_km']}
+        Fatigue: {user['fatigue']}
+        Race priority: {user['race_priority']}
         """
 
     messages = [
