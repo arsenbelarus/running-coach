@@ -4,7 +4,8 @@ from openai import OpenAI
 
 from services.memory_service import (
     load_messages,
-    save_message
+    save_message,
+    get_user
 )
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -19,13 +20,27 @@ prepare for races, and interpret training data.
 
 
 def generate_reply(phone, text):
+    user = get_user(phone)
 
     history = load_messages(phone)
+
+    profile_context = f"""
+        Runner profile:
+        Goal: {user['goal']}
+        Next race: {user['next_race']}
+        5K PB: {user['pb_5k']}
+        10K PB: {user['pb_10k']}
+        Half marathon PB: {user['pb_half']}
+        """
 
     messages = [
         {
             "role": "system",
-            "content": SYSTEM_PROMPT
+            "content": (
+                SYSTEM_PROMPT
+                + "\n\n"
+                + profile_context
+            )
         }
     ]
 
