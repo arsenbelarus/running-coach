@@ -15,7 +15,12 @@ async def webhook(request: Request):
     body = await request.json()
 
     try:
-        message = body["entry"][0]["changes"][0]["value"]["messages"][0]
+        value = body["entry"][0]["changes"][0]["value"]
+
+        if "messages" not in value:
+            return {"status": "ignored"}
+
+        message = value["messages"][0]
 
         phone = message["from"]
         text = message["text"]["body"]
@@ -62,6 +67,8 @@ def strava_callback(code: str, state: str):
         return {
             "error": data
         }
+    
+    create_user(state)
 
     save_strava_tokens(
         phone=state,
