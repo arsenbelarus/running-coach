@@ -24,7 +24,11 @@ def get_last_activity(phone):
 
     tokens = get_strava_tokens(phone)
 
+    print("PHONE:", phone)
+    print("TOKENS:", tokens)
+
     if not tokens or not tokens["access_token"]:
+        print("NO ACCESS TOKEN")
         return None
 
     headers = {
@@ -36,12 +40,18 @@ def get_last_activity(phone):
         headers=headers,
     )
 
+    print("STATUS:", response.status_code)
+    print("BODY:", response.text)
+
     if response.status_code != 200:
         return None
 
     activities = response.json()
 
-    if len(activities) == 0:
+    print("ACTIVITIES:", activities)
+
+    if not activities:
+        print("NO ACTIVITIES FOUND")
         return None
 
     return activities[0]
