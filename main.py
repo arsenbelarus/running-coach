@@ -116,5 +116,8 @@ def verify_strava_webhook(
         )
 
     return JSONResponse(
-        content={"hub.challenge": int(hub_challenge)}
+        status_code=200,
+        content={
+            "hub.challenge": hub_challenge
+        }
     )
