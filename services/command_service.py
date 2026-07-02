@@ -9,6 +9,7 @@ from services.memory_service import (
     update_fatigue,
     update_race_priority
 )
+from services.strava_service import get_strava_auth_url
 
 
 def handle_command(phone, text):
@@ -129,6 +130,16 @@ def handle_command(phone, text):
             f"Weekly KM: {user['weekly_km'] or 'Not set'}\n"
             f"Fatigue: {user['fatigue'] or 'Not set'}\n"
             f"Race priority: {user['race_priority'] or 'Not set'}"
+        )
+    
+    # CONNECT STRAVA
+    if lower_text == "/connect_strava":
+
+        auth_url = get_strava_auth_url(phone)
+
+        return (
+            "Connect your Strava account:\n\n"
+            f"{auth_url}"
         )
 
     return None

@@ -43,6 +43,26 @@ try:
 except:
     pass
 
+try:
+    cursor.execute("ALTER TABLE users ADD COLUMN strava_access_token TEXT")
+except:
+    pass
+
+try:
+    cursor.execute("ALTER TABLE users ADD COLUMN strava_refresh_token TEXT")
+except:
+    pass
+
+try:
+    cursor.execute("ALTER TABLE users ADD COLUMN strava_expires_at TEXT")
+except:
+    pass
+
+try:
+    cursor.execute("ALTER TABLE users ADD COLUMN strava_athlete_id TEXT")
+except:
+    pass
+
 conn.commit()
 
 def save_message(phone, role, content):
@@ -209,6 +229,35 @@ def update_race_priority(phone, race_priority):
         WHERE phone = ?
         """,
         (race_priority, phone)
+    )
+
+    conn.commit()
+
+def save_strava_tokens(
+    phone,
+    access_token,
+    refresh_token,
+    expires_at,
+    athlete_id
+    ):
+    
+    cursor.execute(
+        """
+        UPDATE users
+        SET
+            strava_access_token = ?,
+            strava_refresh_token = ?,
+            strava_expires_at = ?,
+            strava_athlete_id = ?
+        WHERE phone = ?
+        """,
+        (
+            access_token,
+            refresh_token,
+            expires_at,
+            athlete_id,
+            phone
+        )
     )
 
     conn.commit()
