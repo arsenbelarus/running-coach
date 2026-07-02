@@ -240,7 +240,7 @@ def save_strava_tokens(
     expires_at,
     athlete_id
     ):
-    
+
     cursor.execute(
         """
         UPDATE users
@@ -261,3 +261,27 @@ def save_strava_tokens(
     )
 
     conn.commit()
+
+def get_strava_tokens(phone):
+    cursor.execute(
+        """
+        SELECT
+            strava_access_token,
+            strava_refresh_token,
+            strava_expires_at
+        FROM users
+        WHERE phone = ?
+        """,
+        (phone,)
+    )
+
+    row = cursor.fetchone()
+
+    if not row:
+        return None
+
+    return {
+        "access_token": row[0],
+        "refresh_token": row[1],
+        "expires_at": row[2]
+    }

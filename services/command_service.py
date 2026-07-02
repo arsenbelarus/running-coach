@@ -9,8 +9,7 @@ from services.memory_service import (
     update_fatigue,
     update_race_priority
 )
-from services.strava_service import get_strava_auth_url
-
+from services.strava_service import (get_strava_auth_url, get_last_activity)
 
 def handle_command(phone, text):
     text = text.strip()
@@ -140,6 +139,27 @@ def handle_command(phone, text):
         return (
             "Connect your Strava account:\n\n"
             f"{auth_url}"
+        )
+    
+    # LAST RUN
+    if lower_text == "/last_run":
+
+        activity = get_last_activity(phone)
+
+        if activity is None:
+            return (
+            "Couldn't retrieve your latest activity.\n"
+            "Try reconnecting Strava using /connect_strava."
+            )
+
+        distance = activity["distance"] / 1000
+        moving_time = activity["moving_time"] // 60
+
+        return (
+            f"🏃 Latest activity\n\n"
+            f"Name: {activity['name']}\n"
+            f"Distance: {distance:.2f} km\n"
+            f"Time: {moving_time} min"
         )
 
     return None
