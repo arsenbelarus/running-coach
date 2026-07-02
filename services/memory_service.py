@@ -65,6 +65,43 @@ except:
 
 conn.commit()
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS activities (
+
+    strava_activity_id INTEGER PRIMARY KEY,
+
+    phone TEXT NOT NULL,
+
+    name TEXT,
+
+    start_date TEXT,
+
+    distance REAL,
+
+    moving_time INTEGER,
+
+    elapsed_time INTEGER,
+
+    average_speed REAL,
+
+    max_speed REAL,
+
+    average_heartrate REAL,
+
+    max_heartrate REAL,
+
+    total_elevation_gain REAL,
+
+    activity_type TEXT,
+
+    analyzed INTEGER DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
+
+conn.commit()
+
 def save_message(phone, role, content):
     cursor.execute(
         "INSERT INTO messages (phone, role, content) VALUES (?, ?, ?)",
@@ -136,6 +173,24 @@ def create_user(phone):
     )
 
     conn.commit()
+
+def get_phone_by_athlete_id(athlete_id):
+
+    cursor.execute(
+        """
+        SELECT phone
+        FROM users
+        WHERE strava_athlete_id = ?
+        """,
+        (athlete_id,)
+    )
+
+    row = cursor.fetchone()
+
+    if row:
+        return row["phone"]
+
+    return None
 
 def update_goal(phone, goal):
     cursor.execute(

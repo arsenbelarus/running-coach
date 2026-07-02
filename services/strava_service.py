@@ -55,3 +55,29 @@ def get_last_activity(phone):
         return None
 
     return activities[0]
+
+def get_activity(activity_id, access_token):
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    response = requests.get(
+        f"https://www.strava.com/api/v3/activities/{activity_id}",
+        headers=headers
+    )
+
+    if response.status_code != 200:
+        print(response.text)
+        return None
+
+    return response.json()
+
+def get_access_token(phone):
+
+    tokens = get_strava_tokens(phone)
+
+    if not tokens:
+        return None
+
+    return tokens["access_token"]
