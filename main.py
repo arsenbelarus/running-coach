@@ -1,6 +1,6 @@
 import os
 import requests
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 from fastapi.responses import JSONResponse
 
 from services.ai_service import generate_reply
@@ -100,9 +100,9 @@ async def strava_webhook(request: Request):
 
 @app.get("/strava/webhook")
 def verify_strava_webhook(
-    hub_mode: str = "",
-    hub_verify_token: str = "",
-    hub_challenge: str = ""
+    hub_mode: str = Query("", alias="hub.mode"),
+    hub_verify_token: str = Query("", alias="hub.verify_token"),
+    hub_challenge: str = Query("", alias="hub.challenge"),
 ):
 
     print("MODE:", hub_mode)
@@ -116,7 +116,5 @@ def verify_strava_webhook(
         )
 
     return JSONResponse(
-        content={
-            "hub.challenge": int(hub_challenge)
-        }
+        content={"hub.challenge": int(hub_challenge)}
     )
