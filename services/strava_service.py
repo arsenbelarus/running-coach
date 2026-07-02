@@ -1,7 +1,8 @@
 import os
 import requests
 
-from services.memory_service import get_strava_tokens
+from services.memory_service import (get_strava_tokens, get_phone_by_athlete_id)
+from services.activity_service import (activity_exists, save_activity)
 
 STRAVA_CLIENT_ID = os.getenv("STRAVA_CLIENT_ID")
 
@@ -81,3 +82,9 @@ def get_access_token(phone):
         return None
 
     return tokens["access_token"]
+
+def process_strava_webhook(body):
+
+    print("========== STRAVA WEBHOOK ==========")
+    print(body)
+    print("====================================")

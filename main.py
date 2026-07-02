@@ -7,7 +7,7 @@ from services.ai_service import generate_reply
 from services.whatsapp_service import send_message
 from services.command_service import handle_command
 from services.memory_service import (create_user, save_strava_tokens, list_users, get_phone_by_athlete_id)
-from services.strava_service import (get_access_token, get_activity)
+from services.strava_service import (get_access_token, get_activity, process_strava_webhook)
 from services.activity_service import (save_activity, activity_exists)
 
 app = FastAPI()
@@ -90,9 +90,7 @@ async def strava_webhook(request: Request):
 
     body = await request.json()
 
-    print("========== STRAVA WEBHOOK ==========")
-    print(body)
-    print("====================================")
+    process_strava_webhook(body)
 
     return {
         "status": "ok"
