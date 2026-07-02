@@ -58,6 +58,11 @@ def strava_callback(code: str, state: str):
 
     print(data)
 
+    if response.status_code != 200:
+        return {
+            "error": data
+        }
+
     save_strava_tokens(
         phone=state,
         access_token=data["access_token"],
