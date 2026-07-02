@@ -1,6 +1,7 @@
 import os
 import requests
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
 from services.ai_service import generate_reply
 from services.whatsapp_service import send_message
@@ -104,7 +105,18 @@ def verify_strava_webhook(
     hub_challenge: str = ""
 ):
 
-    if hub_verify_token != os.getenv("STRAVA_VERIFY_TOKEN"):
-        return {"error": "Invalid verify token"}
+    print("MODE:", hub_mode)
+    print("VERIFY TOKEN:", hub_verify_token)
+    print("CHALLENGE:", hub_challenge)
 
-    return {"hub.challenge": hub_challenge}
+    if hub_verify_token != os.getenv("STRAVA_VERIFY_TOKEN"):
+        return JSONResponse(
+            status_code=400,
+            content={"message": "Invalid verify token"}
+        )
+
+    return JSONResponse(
+        content={
+            "hub.challenge": int(hub_challenge)
+        }
+    )
