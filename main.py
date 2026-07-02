@@ -5,8 +5,7 @@ from fastapi import FastAPI, Request
 from services.ai_service import generate_reply
 from services.whatsapp_service import send_message
 from services.command_service import handle_command
-from services.memory_service import create_user
-from services.memory_service import save_strava_tokens
+from services.memory_service import (create_user, save_strava_tokens, list_users)
 
 app = FastAPI()
 
@@ -41,6 +40,9 @@ async def webhook(request: Request):
 @app.get("/strava/callback")
 def strava_callback(code: str, state: str):
 
+    print("STATE:", state)
+    list_users()
+
     url = "https://www.strava.com/oauth/token"
 
     payload = {
@@ -53,6 +55,8 @@ def strava_callback(code: str, state: str):
     response = requests.post(url, data=payload)
 
     data = response.json()
+
+    print(data)
 
     save_strava_tokens(
         phone=state,

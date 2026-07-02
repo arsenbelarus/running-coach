@@ -233,6 +233,10 @@ def update_race_priority(phone, race_priority):
 
     conn.commit()
 
+def list_users():
+    cursor.execute("SELECT phone FROM users")
+    print("USERS:", cursor.fetchall())
+
 def save_strava_tokens(
     phone,
     access_token,
@@ -259,6 +263,8 @@ def save_strava_tokens(
             phone
         )
     )
+
+    print("Rows updated:", cursor.rowcount)
 
     conn.commit()
 
